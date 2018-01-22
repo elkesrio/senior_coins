@@ -20,9 +20,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    # If password params not filled update the other fields
+    if !user_params[:password].present? and !user_params[:password_confirmation].present?
+      resource.update_without_password(user_params)
+    else
+      super
+    end
+  end
 
   # DELETE /resource
   # def destroy
@@ -48,6 +53,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # If you have extra params to permit, append them to the sanitizer.
   def configure_account_update_params
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name])
+  end
+
+  def user_params
+    params.require(:user).permit(:first_name, :last_name, :password, :password_confirmation, :email)
   end
 
   # The path used after sign up.
