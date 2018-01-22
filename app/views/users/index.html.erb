@@ -1,0 +1,11 @@
+<%= table_for @users do |table| %>
+  <% table.column :last_name, :header => "Nom" %>
+  <% table.column :first_name, :header => "Prénom" %>
+  <% table.column :senior_coins, :header => "Senior Coins" %>
+  <% table.column "Action" do |user| %>
+    <%= simple_form_for @transaction, :url => transactions_path(current_user, user), method: :post do |f| %>
+      <%= f.input :amount %>
+      <%= f.submit 'Send coins' %>
+    <% end %>
+  <% end %>
+<% end %>
