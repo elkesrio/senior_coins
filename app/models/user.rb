@@ -27,4 +27,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
   has_many :received_transactions, :class_name => 'Transaction', :foreign_key => 'receiver_id'
   has_many :sent_transactions, :class_name => 'Transaction', :foreign_key => 'sender_id'
+
+  # TODO
+  def transactions
+    Transaction.where(receiver_id: id).or(sender_id: id)
+  end
 end

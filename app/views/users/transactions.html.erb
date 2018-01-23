@@ -1,0 +1,6 @@
+<h2> Sent transactions </h2>
+<%= table_for @sent_transactions do |table| %>
+  <% table.column :last_name, :header => "Nom" %>
+  <% table.column :first_name, :header => "Prénom" %>
+  <% table.column :senior_coins, :header => "Senior Coins" %>
+<% end %>
