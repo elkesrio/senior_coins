@@ -4,8 +4,8 @@
   <% table.column :senior_coins, :header => "Senior Coins" %>
   <% table.column "Action" do |user| %>
     <%= simple_form_for @transaction, :url => transactions_path(current_user, user), method: :post do |f| %>
-      <%= f.input :amount %>
-      <%= f.submit 'Send coins' %>
+      <%= f.input_field :amount, class: 'inline-block' %>
+      <%= f.submit 'Send coins', class: 'inline-block' %>
     <% end %>
   <% end %>
 <% end %>

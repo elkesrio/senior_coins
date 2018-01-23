@@ -13,24 +13,31 @@
 class Transaction < ApplicationRecord
   belongs_to :sender, :class_name => 'User'
   belongs_to :receiver, :class_name => 'User'
-  before_create :validate_transaction, :message => 'The send hasn\'t enough coins'
+  validate :validate_transaction_amount
+  validate :validate_transaction_members
 
-  def self.send_coins(sender_id, receiver_id, amount)
-    transaction = Transaction.new(amount: amount, sender_id: sender_id, receiver_id: receiver_id)
-    if transaction.save
-      sender = User.find(sender_id)
-      receiver = User.find(receiver_id)
-      sender.senior_coins -= transaction.amount
-      receiver.senior_coins += transaction.amount
-      sender.save!
-      receiver.save!
-    # else
+  # Method called after that the transaction has been saved successfully (passed the validations below), it sends the money from the receiver to the sender
+  def send_coins
+    sender = User.find(sender_id)
+    receiver = User.find(receiver_id)
+    sender.senior_coins -= amount
+    receiver.senior_coins += amount
+    sender.save!
+    receiver.save!
+  end
 
+  # Validates the amount of the transaction (must be not 0 and greater than what the sender has)
+  def validate_transaction_amount
+    if User.find(sender_id).senior_coins < amount or amount == 0
+      errors.add(:amount, "can't be greater than what you have")
     end
   end
 
-  def validate_transaction
-    (  !(User.find(sender_id).senior_coins >= amount) or ( sender_id == receiver_id ) )
-    throw(:abort)
+  # Validates the receiver and the sender are different
+  def validate_transaction_members
+    if ( sender_id == receiver_id )
+      errors.add(:sender, "can't be the receiver")
+    end
   end
+
 end
