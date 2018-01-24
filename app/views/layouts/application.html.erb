@@ -25,10 +25,9 @@
       <% end %>
     </div>
     <div class="notices">
-      <% flash[:notice]&.each do |notice| %>
-        <p class="notice"><%= notice %></p>
-      <% end %>
+      <p class="notice"><%= flash[:notice] %></p>
     </div>
     <%= yield %>
+    <center><%= link_to 'Back', url_for(:back) %></center>
   </body>
 </html>

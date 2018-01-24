@@ -28,8 +28,17 @@ class User < ApplicationRecord
   has_many :received_transactions, :class_name => 'Transaction', :foreign_key => 'receiver_id'
   has_many :sent_transactions, :class_name => 'Transaction', :foreign_key => 'sender_id'
 
-  # TODO
-  def transactions
-    Transaction.where(receiver_id: id).or(sender_id: id)
+  # Returns an array of OpenStruct objects that has the amount and the full name of the sender for every transaction
+  def received_transactions_with_sender_full_name
+    # Eager load <=> includes with one SQL query
+    array_of_hashes = Transaction.eager_load(:sender).where(receiver_id: self.id).map{ |transaction| {amount: transaction.amount, full_name: transaction.sender.first_name + ' ' + transaction.sender.last_name} }
+    array_of_objects = array_of_hashes.map{ |received_transaction| JSON.parse(received_transaction.to_json, object_class: OpenStruct) }
+  end
+
+  # Same as sent_transactions_with_sender_full_name
+  def sent_transactions_with_receiver_full_name
+    # Eager load <=> includes with one SQL query
+    array_of_hashes = Transaction.eager_load(:receiver).where(sender_id: self.id).map{ |transaction| {amount: transaction.amount, full_name: transaction.receiver.first_name + ' ' + transaction.receiver.last_name} }
+    array_of_objects = array_of_hashes.map{ |sent_transaction| JSON.parse(sent_transaction.to_json, object_class: OpenStruct) }
   end
 end

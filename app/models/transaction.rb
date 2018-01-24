@@ -26,6 +26,7 @@ class Transaction < ApplicationRecord
     receiver.save!
   end
 
+
   # Validates the amount of the transaction (must be not 0 and greater than what the sender has)
   def validate_transaction_amount
     if User.find(sender_id).senior_coins < amount or amount == 0

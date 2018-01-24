@@ -1,4 +1,7 @@
 <center>
   <h1>Welcome to the <b>Senior Coins</b> Platform</h1>
-  <%= link_to "Send coins", users_path %>
+  <% if user_signed_in? %>
+    <p><%= link_to "Send coins", users_path %></p>
+    <p><%= link_to "See my transactions", user_transactions_path(current_user) %></p>
+  <% end %>
 </center>
